@@ -4,7 +4,7 @@ resolvers += Resolver.url("Scala.js temp repository",
 // Turn this project into a Scala.js project by importing these settings
 scalaJSSettings
 
-name := "Example"
+name := "Mastermind"
 
 version := "0.1-SNAPSHOT"
 

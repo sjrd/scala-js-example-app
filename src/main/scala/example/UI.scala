@@ -3,7 +3,7 @@ package example
 import scala.scalajs.js
 import org.scalajs.dom
 import org.scalajs.jquery
-import jquery.{ JQuery => jQ }
+import jquery.{ jQuery => jQ }
 
 import scala.collection.mutable
 

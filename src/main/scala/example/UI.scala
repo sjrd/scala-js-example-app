@@ -2,7 +2,8 @@ package example
 
 import scala.scalajs.js
 import org.scalajs.dom
-import org.scalajs.jquery.{ JQuery => jQ }
+import org.scalajs.jquery
+import jquery.{ JQuery => jQ }
 
 import scala.collection.mutable
 
@@ -28,8 +29,10 @@ class UI(val model: GameModel) {
 
   //canvas.width(200).height(520)
   drawCanvas()
+  for (selector <- colorSelectors)
+    selector.change((e: jquery.JQueryEventObject) => drawCanvas())
 
-  guessButton click { () =>
+  def currentCode = {
     val optColors =
       for (selector <- colorSelectors) yield {
         model.colors.filter(_.webColor == selector.`val`().toString)
@@ -37,6 +40,14 @@ class UI(val model: GameModel) {
     val colors = optColors.flatten
 
     if (colors.size == CodeLength) {
+      Some(colors)
+    } else {
+      None
+    }
+  }
+
+  guessButton click { () =>
+    for (colors <- currentCode) {
       val attempt = model.attemptCode(colors)
       val hints = attempt.hints
 
@@ -81,13 +92,17 @@ class UI(val model: GameModel) {
     ctx.fillStyle = "tan"
     ctx.fillRect(0, 0, 200, 520)
 
+    def drawCode(code: Code, startRowY: Int) = {
+      for ((color, col) <- code.zipWithIndex) {
+        drawCircle(color, 20 + 30*col, startRowY, 20)
+      }
+    }
+
     for ((attempt, row) <- model.attempts.zipWithIndex) {
       import attempt.hints._
 
       val startRowY = 20 + 40*row
-      for ((color, col) <- attempt.code.zipWithIndex) {
-        drawCircle(color, 20 + 30*col, startRowY, 20)
-      }
+      drawCode(attempt.code, startRowY)
       for (i <- 0 until CodeLength) {
         val x = 20 + 30*CodeLength + 10 + (i % (CodeLength/2))*10
         val y = startRowY + (i / (CodeLength/2))*10
@@ -97,6 +112,11 @@ class UI(val model: GameModel) {
           else Color("tan")
         drawCircle(color, x, y, 8)
       }
+    }
+
+    {
+      val startRowY = 20 + 40*model.attempts.size
+      currentCode.foreach(drawCode(_, startRowY))
     }
   }
 }

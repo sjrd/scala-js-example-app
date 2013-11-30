@@ -1,6 +1,6 @@
 package example
 
-import scala.collection.mutable
+import scala.collection.{ immutable, mutable }
 
 class GameModel(
     val colorNames: Seq[String] = GameModel.DefaultColorNames,
@@ -9,6 +9,7 @@ class GameModel(
   import GameModel._
 
   val colors = colorNames map Color
+  val colorNamed = (colorNames zip colors).toMap
 
   private[this] val code: Code = (1 to CodeLength) map (
       x => colors(scala.util.Random.nextInt(colors.size)))
@@ -64,7 +65,7 @@ object GameModel {
 
   case class Color(webColor: String)
 
-  type Code = IndexedSeq[Color]
+  type Code = immutable.IndexedSeq[Color]
 
   case class Hints(goods: Int, misplaced: Int) {
     require(goods >= 0 && misplaced >= 0)

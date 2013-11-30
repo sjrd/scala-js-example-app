@@ -10,9 +10,11 @@ import scala.collection.mutable
 class UI(val model: GameModel) {
   import GameModel._
 
+  private val currentCode = Array.fill(CodeLength)(model.colors.head)
+
   private val playground = jQ("#playground")
   private val guesses = jQ("<ul>").appendTo(playground)
-  private val colorSelectors = ((1 to 4) map (x => makeColorSelector(x)))
+  private val colorSelectors = (0 until CodeLength) map makeColorSelector
   private val guessButton = jQ("<button>").text("Guess")
 
   {
@@ -27,43 +29,24 @@ class UI(val model: GameModel) {
   private val ctx = canvas(0).asInstanceOf[dom.HTMLCanvasElement]
       .getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
 
-  //canvas.width(200).height(520)
   drawCanvas()
-  for (selector <- colorSelectors)
-    selector.change((e: jquery.JQueryEventObject) => drawCanvas())
-
-  def currentCode = {
-    val optColors =
-      for (selector <- colorSelectors) yield {
-        model.colors.filter(_.webColor == selector.`val`().toString)
-      }
-    val colors = optColors.flatten
-
-    if (colors.size == CodeLength) {
-      Some(colors)
-    } else {
-      None
-    }
-  }
 
   guessButton click { () =>
-    for (colors <- currentCode) {
-      val attempt = model.attemptCode(colors)
-      val hints = attempt.hints
+    val attempt = model.attemptCode(currentCode.toVector)
+    val hints = attempt.hints
 
-      val codeText = colors.map(_.webColor).mkString(" - ")
-      val hintsText = s"goods: ${hints.goods} - misplaced: ${hints.misplaced}"
-      val text = s"$codeText -- $hintsText"
+    val codeText = currentCode.map(_.webColor).mkString(" - ")
+    val hintsText = s"goods: ${hints.goods} - misplaced: ${hints.misplaced}"
+    val text = s"$codeText -- $hintsText"
 
-      jQ("<li>").text(text).appendTo(guesses)
+    jQ("<li>").text(text).appendTo(guesses)
 
-      drawCanvas()
+    drawCanvas()
 
-      model.status match {
-        case GameStatus.Won => dom.alert("You won!")
-        case GameStatus.Lost => dom.alert("You lost!")
-        case _ => ()
-      }
+    model.status match {
+      case GameStatus.Won => dom.alert("You won!")
+      case GameStatus.Lost => dom.alert("You lost!")
+      case _ => ()
     }
   }
 
@@ -71,11 +54,19 @@ class UI(val model: GameModel) {
     val select = jQ("<select>")
     for (color <- model.colors)
       select.append(jQ("<option>").`val`(color.webColor).text(color.webColor))
+
+    select.`val`(currentCode(pos).webColor)
+    select change { (e: jquery.JQueryEventObject) =>
+      currentCode(pos) = model.colorNamed(select.`val`().toString)
+      drawCanvas()
+    }
+
     select
   }
 
   private def drawCanvas(): Unit = {
-    def drawCircle(color: Color, x: js.Number, y: js.Number, dia: js.Number, highlighted: Boolean = false) = {
+    def drawCircle(color: Color, x: Double, y: Double, dia: Double,
+        highlighted: Boolean = false) = {
       def prepPath() = {
         ctx.beginPath()
         val r = dia/2
@@ -98,11 +89,8 @@ class UI(val model: GameModel) {
       }
     }
 
-    for ((attempt, row) <- model.attempts.zipWithIndex) {
-      import attempt.hints._
-
-      val startRowY = 20 + 40*row
-      drawCode(attempt.code, startRowY)
+    def drawHints(hints: Hints, startRowY: Int) = {
+      import hints._
       for (i <- 0 until CodeLength) {
         val x = 20 + 30*CodeLength + 10 + (i % (CodeLength/2))*10
         val y = startRowY + (i / (CodeLength/2))*10
@@ -114,9 +102,15 @@ class UI(val model: GameModel) {
       }
     }
 
+    for ((attempt, row) <- model.attempts.zipWithIndex) {
+      val startRowY = 20 + 40*row
+      drawCode(attempt.code, startRowY)
+      drawHints(attempt.hints, startRowY)
+    }
+
     {
       val startRowY = 20 + 40*model.attempts.size
-      currentCode.foreach(drawCode(_, startRowY))
+      drawCode(currentCode.toVector, startRowY)
     }
   }
 }

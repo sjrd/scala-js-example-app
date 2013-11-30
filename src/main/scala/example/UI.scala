@@ -53,11 +53,11 @@ class UI(val model: GameModel) {
   private def makeColorSelector(pos: Int) = {
     val select = jQ("<select>")
     for (color <- model.colors)
-      select.append(jQ("<option>").`val`(color.webColor).text(color.webColor))
+      select.append(jQ("<option>").value(color.webColor).text(color.webColor))
 
-    select.`val`(currentCode(pos).webColor)
+    select.value(currentCode(pos).webColor)
     select change { (e: jquery.JQueryEventObject) =>
-      currentCode(pos) = model.colorNamed(select.`val`().toString)
+      currentCode(pos) = model.colorNamed(select.value().toString)
       drawCanvas()
     }
 

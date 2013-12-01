@@ -3,6 +3,7 @@ package example
 import scala.scalajs.js
 import org.scalajs.dom
 import org.scalajs.jquery
+import dom.extensions.pimpedContext
 import jquery.{ jQuery => jQ }
 
 import scala.collection.mutable
@@ -67,17 +68,11 @@ class UI(val model: GameModel) {
   private def drawCanvas(): Unit = {
     def drawCircle(color: Color, x: Double, y: Double, dia: Double,
         highlighted: Boolean = false) = {
-      def prepPath() = {
-        ctx.beginPath()
-        val r = dia/2
-        ctx.arc(x+r, y+r, r, 0, 2*Math.PI)
-      }
+      val r = dia/2
       ctx.fillStyle = color.webColor
-      prepPath()
-      ctx.fill()
+      ctx.fillCircle(x+r, y+r, r)
       ctx.strokeStyle = (if (highlighted) "white" else "black") + " 2px"
-      prepPath()
-      ctx.stroke()
+      ctx.strokeCircle(x+r, y+r, r)
     }
 
     ctx.fillStyle = "tan"

@@ -9,6 +9,7 @@ class GameModel(
   import GameModel._
 
   val colors = colorNames map Color
+  val colorNamed = (colorNames zip colors).toMap
 
   private[this] val code: Code = (1 to CodeLength) map (
       x => colors(scala.util.Random.nextInt(colors.size)))

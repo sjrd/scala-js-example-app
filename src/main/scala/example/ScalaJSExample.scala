@@ -2,8 +2,11 @@ package example
 
 import scala.scalajs.js
 import js.Dynamic.{ global => g }
+import js.annotation.JSExport
 
+@JSExport
 object ScalaJSExample {
+  @JSExport
   def main(): Unit = {
     val paragraph = g.document.createElement("p")
     paragraph.innerHTML = "<strong>It works!</strong>"

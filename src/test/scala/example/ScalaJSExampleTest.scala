@@ -1,5 +1,4 @@
 package example
-package test
 
 import scala.scalajs.js
 import js.Dynamic.{ global => g }

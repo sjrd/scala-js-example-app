@@ -1,5 +1,7 @@
 package vipion
 
+import scala.util.Random
+
 import scala.scalajs.js
 import js.annotation.JSExport
 import org.scalajs.dom
@@ -209,7 +211,10 @@ object Vipion extends js.JSApp {
       }
       val me = game.currentPlayer
       val opponent = me.opponent
-      moves.min(Ordering.fromLessThan[BestMove] { (lhs, rhs) =>
+      val shuffledMoves =
+        if (depth == 0) Random.shuffle(moves)
+        else moves
+      shuffledMoves.min(Ordering.fromLessThan[BestMove] { (lhs, rhs) =>
         // Return true iff lhs is better than rhs
         (lhs.game.winner, rhs.game.winner) match {
           case (Some(`me`), Some(`me`)) =>

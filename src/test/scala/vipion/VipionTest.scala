@@ -1,15 +1,15 @@
-package example
+package vipion
 
 import scala.scalajs.js
 import js.Dynamic.{ global => g }
 import scala.scalajs.test.JasmineTest
 
-object ScalaJSExampleTest extends JasmineTest {
+object VipionTest extends JasmineTest {
 
-  describe("ScalaJSExample") {
+  describe("Vipion") {
 
     it("should implement square()") {
-      import ScalaJSExample._
+      import Vipion._
 
       expect(square(0)).toBe(0)
       expect(square(4)).toBe(16)

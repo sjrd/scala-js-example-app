@@ -1,10 +1,10 @@
-package example
+package vipion
 
 import scala.scalajs.js
 import js.annotation.JSExport
 import org.scalajs.dom
 
-object ScalaJSExample extends js.JSApp {
+object Vipion extends js.JSApp {
   def main(): Unit = {
     val paragraph = dom.document.createElement("p")
     paragraph.innerHTML = "<strong>It works!</strong>"

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Test suite - Jasmine HTML reporter example</title>
+  <title>Vipion test suite</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jasmine/1.3.1/jasmine.css"></link>
 </head>
@@ -9,12 +9,12 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="http://cdn.jsdelivr.net/jasmine/1.3.1/jasmine.js"></script>
 <script type="text/javascript" src="http://cdn.jsdelivr.net/jasmine/1.3.1/jasmine-html.js"></script>
-<script type="text/javascript" src="./target/scala-2.11/example-test-opt.js"></script>
+<script type="text/javascript" src="./target/scala-2.11/vipion-test-opt.js"></script>
 
 <script type="text/javascript">
 $(function() {
   // Load tests
-  example.ScalaJSExampleTest();
+  vipion.VipionTest();
 
   // Setup and run Jasmine
   var jasmineEnv = jasmine.getEnv();

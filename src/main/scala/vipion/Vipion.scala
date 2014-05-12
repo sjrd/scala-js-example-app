@@ -24,8 +24,8 @@ object SquareState {
   case class Mark(player: Player) extends SquareState
 }
 
-class VipionGame private (
-    _board: Seq[Seq[SquareState]],
+case class VipionGame private (
+    private val _board: Seq[Seq[SquareState]],
     val currentPlayer: Player
 ) {
   import VipionGame._
@@ -98,7 +98,7 @@ object VipionGame {
 }
 
 object Vipion extends js.JSApp {
-  private var computerPlayer: Option[Player] = Some(Player.Circle)
+  private var computerPlayer: Option[Player] = Some(Player.Cross)
   private var computerMaxDepth: Int = 3
 
   private var game: VipionGame = VipionGame.diagonal
@@ -190,7 +190,9 @@ object Vipion extends js.JSApp {
 
     case class BestMove(x: Int, y: Int, game: VipionGame, depth: Int)
 
-    def bestMove(game: VipionGame, depth: Int): BestMove = {
+    val cache = scala.collection.mutable.Map.empty[VipionGame, BestMove]
+
+    def bestMove(game: VipionGame, depth: Int): BestMove = cache.getOrElseUpdate(game, {
       assert(!game.done)
       val nextDepth = depth+1
       val moves = for {
@@ -221,7 +223,7 @@ object Vipion extends js.JSApp {
           case _                     => false
         }
       })
-    }
+    })
 
     val BestMove(x, y, _, _) = bestMove(game, 0)
     assert(game.board(x, y) == SquareState.Empty)

@@ -33,18 +33,7 @@ case class VipionGame private (
   import VipionGame._
 
   lazy val winner: Option[Player] = {
-    (for {
-      x <- Iterable.range(0, 4)
-      y <- Iterable.range(0, 4)
-      s = board(x, y)
-      p <- (s match {
-        case SquareState.Mark(p) => List(p)
-        case _                   => Nil
-      })
-      (dirX, dirY) <- Seq((1, 0), (1, 1), (0, 1), (-1, 1))
-      if inBounds(x+2*dirX, y+2*dirY)
-      if (board(x+dirX, y+dirY) == s) && (board(x+2*dirX, y+2*dirY) == s)
-    } yield p).headOption
+    None
   }
 
   def done = winner.isDefined || isFull

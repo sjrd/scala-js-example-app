@@ -22,15 +22,6 @@ object VipionTest extends JasmineTest {
       expectFalse(done)
       expectFalse(winner.isDefined)
     }
-
-    it("should declare a winner") {
-      val game = VipionGame.diagonal
-        .playAt(0, 0) .playAt(3, 0)
-        .playAt(0, 1) .playAt(3, 1)
-        .playAt(0, 2)
-      expectTrue(game.done)
-      expectTrue(game.winner == Some(Cross))
-    }
   }
 
   private def expectTrue(test: Boolean): Unit =

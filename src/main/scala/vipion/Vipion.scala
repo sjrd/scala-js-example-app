@@ -65,21 +65,6 @@ case class VipionGame private (
     else
       this
   }
-
-  override def toString(): String = {
-    val lines = for (y <- 0 until Size) yield {
-      val chars = for (x <- 0 until Size) yield {
-        board(x, y) match {
-          case SquareState.Empty               => "."
-          case SquareState.Disabled            => "*"
-          case SquareState.Mark(Player.Cross)  => "X"
-          case SquareState.Mark(Player.Circle) => "O"
-        }
-      }
-      chars.mkString
-    }
-    lines.mkString("\n", "\n", "\n") + s"winner: $winner\n"
-  }
 }
 object VipionGame {
   val Size = 4

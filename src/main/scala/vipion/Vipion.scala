@@ -85,7 +85,7 @@ object VipionGame {
 }
 
 object Vipion extends js.JSApp {
-  private var computerPlayer: Option[Player] = Some(Player.Cross)
+  private var computerPlayer: Option[Player] = None
   private var computerMaxDepth: Int = 3
 
   private var game: VipionGame = VipionGame.diagonal

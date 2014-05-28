@@ -4,9 +4,7 @@ import scala.scalajs.js
 import js.annotation.JSExport
 import org.scalajs.dom
 
-@JSExport
-object ScalaJSExample {
-  @JSExport
+object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
     val paragraph = dom.document.createElement("p")
     paragraph.innerHTML = "<strong>It works!</strong>"

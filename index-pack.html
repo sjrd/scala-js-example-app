@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example Scala.js application</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<h1>Example Scala.js application - packaged version</h1>
+
+<p><strong>Deprecated:</strong> The packaged version and the `packageJS` are
+deprecated as of Scala.js 0.5.0. Please use the fast-optimized version
+instead.</p>
+
+<p>After having compiled and packaged properly the code for the application
+(using `sbt packageJS`), you should see "It works" herebelow.
+See README.md for detailed explanations.</p>
+
+<div id="playground">
+</div>
+
+<script type="text/javascript" src="./target/scala-2.11/corejslibs.js"></script>
+<script type="text/javascript" src="./target/scala-2.11/example-pack-extdeps.js"></script>
+<script type="text/javascript" src="./target/scala-2.11/example-pack-intdeps.js"></script>
+<script type="text/javascript" src="./target/scala-2.11/example-pack-app.js"></script>
+<script type="text/javascript" src="./target/scala-2.11/example-launcher.js"></script>
+
+</body>
+</html>

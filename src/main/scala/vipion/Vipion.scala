@@ -109,8 +109,8 @@ object Vipion extends js.JSApp {
       if (game.done) {
         startGame()
       } else if (!isComputerTurn) {
-        val x = e.asInstanceOf[js.Dynamic].offsetX.asInstanceOf[js.Number].toInt / SquareSize
-        val y = e.asInstanceOf[js.Dynamic].offsetY.asInstanceOf[js.Number].toInt / SquareSize
+        val x = e.offsetX / SquareSize
+        val y = e.offsetY / SquareSize
         playAt(x, y)
       }
     }
@@ -224,4 +224,15 @@ object Vipion extends js.JSApp {
    *  This demonstrates unit testing.
    */
   def square(x: Int): Int = x*x
+
+  implicit class MouseEventExtensions(val e: dom.MouseEvent) extends AnyVal {
+    private def target = e.target.asInstanceOf[dom.HTMLElement]
+    private def boundingRect = target.getBoundingClientRect()
+
+    def offsetX: Int =
+      e.clientX - boundingRect.left.toInt - target.clientLeft + target.scrollLeft
+
+    def offsetY: Int =
+      e.clientY - boundingRect.top.toInt - target.clientTop + target.scrollTop
+  }
 }

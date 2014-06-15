@@ -27,7 +27,7 @@ object SquareState {
 }
 
 case class VipionGame private (
-    private val _board: Seq[Seq[SquareState]],
+    private val _board: Int,
     val currentPlayer: Player
 ) {
   import VipionGame._
@@ -41,24 +41,21 @@ case class VipionGame private (
       var y = 0
       val maxY = if (x < 2) 4 else 2
       while (y < maxY) {
-        val s = board(x, y)
-        s match {
-          case SquareState.Mark(p) => {
-            var z = 0
-            while (z < 4) {
-              val dirX =
-                if (z == 2) 0
-                else if (z == 3) -1
-                else 1
-              val dirY = if (z == 0) 0 else 1
-              if (inBounds(x+2*dirX, y+2*dirY) &&
-                  board(x+dirX, y+dirY) == s &&
-                  board(x+2*dirX, y+2*dirY) == s)
-                return Some(p)
-              z += 1
-            }
+        val t = tagAt(x, y)
+        if (tagIsMark(t)) {
+          var z = 0
+          while (z < 4) {
+            val dirX =
+              if (z == 2) 0
+              else if (z == 3) -1
+              else 1
+            val dirY = if (z == 0) 0 else 1
+            if (inBounds(x+2*dirX, y+2*dirY) &&
+                tagAt(x+dirX, y+dirY) == t &&
+                tagAt(x+2*dirX, y+2*dirY) == t)
+              return Some(tagToPlayer(t))
+            z += 1
           }
-          case _ =>
         }
         y += 1
       }
@@ -69,12 +66,21 @@ case class VipionGame private (
 
   def done = winner.isDefined || isFull
 
-  def isFull = _board.forall(_.forall(_ != SquareState.Empty))
+  def isFull: Boolean =
+    ((_board & EvenBits) | ((_board >> 1) & EvenBits)) == EvenBits
 
-  def board(x: Int, y: Int): SquareState = _board(x)(y)
+  def tagAt(x: Int, y: Int): Int =
+    (_board >> offsetOf(x, y)) & TagMask
 
-  private def withSquare(x: Int, y: Int, s: SquareState): VipionGame =
-    new VipionGame(_board.updated(x, _board(x).updated(y, s)), currentPlayer)
+  def board(x: Int, y: Int): SquareState =
+    tagToState(tagAt(x, y))
+
+  private def withSquare(x: Int, y: Int, s: SquareState): VipionGame = {
+    val offset = offsetOf(x, y)
+    val tag = stateToTag(s)
+    val newBoard = _board & ~(TagMask << offset) | (tag << offset)
+    new VipionGame(newBoard, currentPlayer)
+  }
 
   private def withNextPlayer: VipionGame =
     new VipionGame(_board, currentPlayer.opponent)
@@ -85,15 +91,43 @@ case class VipionGame private (
     else
       this
   }
+
+  private[this] def offsetOf(x: Int, y: Int): Int = (x*4 + y) * TagWidth
 }
 object VipionGame {
   val Size = 4
+
+  private final val TagEmpty = 0
+  private final val TagDisabled = 1
+  private final val TagCross = 2
+  private final val TagCircle = 3
+
+  private def stateToTag(state: SquareState): Int = state match {
+    case SquareState.Empty               => TagEmpty
+    case SquareState.Disabled            => TagDisabled
+    case SquareState.Mark(Player.Cross)  => TagCross
+    case SquareState.Mark(Player.Circle) => TagCircle
+  }
+
+  private val tagToState: Array[SquareState] =
+    Array(SquareState.Empty, SquareState.Disabled,
+        SquareState.Mark(Player.Cross), SquareState.Mark(Player.Circle))
+
+  private def tagToPlayer(tag: Int): Player =
+    if (tag == TagCross) Player.Cross else Player.Circle
+
+  private def tagIsMark(tag: Int): Boolean = tag >= TagCross
+
+  private final val TagWidth = 2
+  private final val TagMask = 3
+
+  private final val EvenBits = 0x55555555 // 01010101 x4 in binary
 
   def inBounds(x: Int, y: Int): Boolean =
     x >= 0 && x < Size && y >= 0 && y < Size
 
   private val Empty =
-    new VipionGame(Seq.fill(4, 4)(SquareState.Empty), Player.Cross)
+    new VipionGame(0, Player.Cross)
 
   def apply(disabled: (Int, Int)*): VipionGame = {
     disabled.foldLeft(Empty) { case (prev, (x, y)) =>
@@ -106,7 +140,7 @@ object VipionGame {
 
 object Vipion extends js.JSApp {
   private var computerPlayer: Option[Player] = Some(Player.Cross)
-  private var computerMaxDepth: Int = 3
+  private var computerMaxDepth: Int = 7
 
   private var game: VipionGame = VipionGame.diagonal
 

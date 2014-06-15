@@ -32,19 +32,39 @@ case class VipionGame private (
 ) {
   import VipionGame._
 
-  lazy val winner: Option[Player] = {
-    (for {
-      x <- Iterable.range(0, 4)
-      y <- Iterable.range(0, 4)
-      s = board(x, y)
-      p <- (s match {
-        case SquareState.Mark(p) => List(p)
-        case _                   => Nil
-      })
-      (dirX, dirY) <- Seq((1, 0), (1, 1), (0, 1), (-1, 1))
-      if inBounds(x+2*dirX, y+2*dirY)
-      if (board(x+dirX, y+dirY) == s) && (board(x+2*dirX, y+2*dirY) == s)
-    } yield p).headOption
+  lazy val winner: Option[Player] = computeWinner()
+
+  private[this] def computeWinner(): Option[Player] = {
+    import scala.annotation.switch
+    var x = 0
+    while (x < 4) {
+      var y = 0
+      val maxY = if (x < 2) 4 else 2
+      while (y < maxY) {
+        val s = board(x, y)
+        s match {
+          case SquareState.Mark(p) => {
+            var z = 0
+            while (z < 4) {
+              val dirX =
+                if (z == 2) 0
+                else if (z == 3) -1
+                else 1
+              val dirY = if (z == 0) 0 else 1
+              if (inBounds(x+2*dirX, y+2*dirY) &&
+                  board(x+dirX, y+dirY) == s &&
+                  board(x+2*dirX, y+2*dirY) == s)
+                return Some(p)
+              z += 1
+            }
+          }
+          case _ =>
+        }
+        y += 1
+      }
+      x += 1
+    }
+    None
   }
 
   def done = winner.isDefined || isFull

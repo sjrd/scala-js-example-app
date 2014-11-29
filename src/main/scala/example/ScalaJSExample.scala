@@ -6,9 +6,13 @@ import org.scalajs.dom
 
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
-    val paragraph = dom.document.createElement("p")
-    paragraph.innerHTML = "<strong>It works!</strong>"
-    dom.document.getElementById("playground").appendChild(paragraph)
+    if (!js.isUndefined(dom.document)) {
+      val paragraph = dom.document.createElement("p")
+      paragraph.innerHTML = "<strong>It works!</strong>"
+      dom.document.getElementById("playground").appendChild(paragraph)
+    } else {
+      println("It works!")
+    }
   }
 
   /** Computes the square of an integer.

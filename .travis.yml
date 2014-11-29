@@ -1,6 +1,6 @@
 language: scala
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION test packageJS fullOptJS
+  - sbt ++$TRAVIS_SCALA_VERSION test 'set scalaJSStage := FastOptStage' test 'set scalaJSStage := FullOptStage' test
 scala:
   - 2.10.4
   - 2.11.2

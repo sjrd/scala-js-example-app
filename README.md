@@ -17,8 +17,12 @@ changes.
 ## Run the tests
 
 To run the test suite, execute the task `test`. If you have installed
-[Node.js](http://nodejs.org/), you can also run `fastOptStage::test` which is
-faster.
+[Node.js](http://nodejs.org/), you can use
+
+    > set scalaJSStage := FastOptStage
+
+which will cause `test` to run the result of `fastOptJS` with Node.js,
+which is faster.
 
 ## The fully optimized version
 

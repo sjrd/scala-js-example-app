@@ -12,5 +12,5 @@ persistLauncher := true
 persistLauncher in Test := false
 
 libraryDependencies ++= Seq(
-    "org.scala-js" %%%! "scalajs-dom" % "0.7.0"
+    "org.scala-js" %%% "scalajs-dom" % "0.7.0"
 )

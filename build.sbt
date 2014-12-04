@@ -1,16 +1,34 @@
-lazy val root = project.in(file(".")).
-  enablePlugins(ScalaJSPlugin)
+lazy val rootProject = project.in(file(".")).
+  aggregate(rootJVM, rootJS)
 
-name := "Example"
+lazy val root = crossProject.in(file(".")).
+  settings(
+    normalizedName := "example",
 
-version := "0.1-SNAPSHOT"
+    version := "0.1-SNAPSHOT",
 
-scalaVersion := "2.11.2"
+    scalaVersion := "2.11.2",
 
-persistLauncher := true
+    libraryDependencies ++= Seq(
+        "com.lihaoyi" %%% "utest" % "0.2.5-M1" % "test"
+    ),
 
-persistLauncher in Test := false
+    testFrameworks += new TestFramework("utest.runner.Framework")
+  ).
+  jvmSettings(
+    name := "Example JVM"
+  ).
+  jsSettings(
+    name := "Example JS",
 
-libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.7.0"
-)
+    persistLauncher := true,
+
+    persistLauncher in Test := false,
+
+    libraryDependencies ++= Seq(
+        "org.scala-js" %%% "scalajs-dom" % "0.7.0"
+    )
+  )
+
+lazy val rootJVM = root.jvm
+lazy val rootJS = root.js

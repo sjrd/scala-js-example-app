@@ -1,17 +1,19 @@
 // Turn this project into a Scala.js project by importing these settings
-scalaJSSettings
+enablePlugins(ScalaJSPlugin)
 
 name := "Example"
 
 version := "0.1-SNAPSHOT"
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.5"
 
-ScalaJSKeys.persistLauncher := true
+persistLauncher in Compile := true
 
-ScalaJSKeys.persistLauncher in Test := false
+persistLauncher in Test := false
+
+testFrameworks += new TestFramework("utest.runner.Framework")
 
 libraryDependencies ++= Seq(
-    "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6",
-    "org.scala-lang.modules.scalajs" %% "scalajs-jasmine-test-framework" % scalaJSVersion % "test"
+    "org.scala-js" %%% "scalajs-dom" % "0.8.0",
+    "com.lihaoyi" %%% "utest" % "0.3.0" % "test"
 )

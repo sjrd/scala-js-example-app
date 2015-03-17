@@ -5,7 +5,7 @@ name := "Example"
 
 version := "0.1-SNAPSHOT"
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.6"
 
 persistLauncher in Compile := true
 

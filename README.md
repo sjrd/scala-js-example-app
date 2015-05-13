@@ -1,4 +1,4 @@
-# Example application written in Scala.js
+# Barebone application written in Scala.js
 
 This is a barebone example of an application written in
 [Scala.js](https://www.scala-js.org/).
@@ -17,8 +17,11 @@ changes.
 ## Run the tests
 
 To run the test suite, execute the task `test`. If you have installed
-[Node.js](http://nodejs.org/), you can also run `fastOptStage::test` which is
-faster.
+[Node.js](http://nodejs.org/), you can use that runtime to run the tests,
+which is faster:
+
+    > set scalaJSStage in Global := FastOptStage
+    > test
 
 ## The fully optimized version
 
@@ -27,3 +30,9 @@ seconds to execute, so typically you only use this for the final, production
 version of your application. While `index-fastopt.html` refers to the
 JavaScript emitted by `fastOptJS`, `index.html` refers to the optimized
 JavaScript emitted by `fullOptJS`.
+
+If Node.js is installed, the tests can also be run in their fully optimized
+version with:
+
+    > set scalaJSStage in Global := FullOptStage
+    > test

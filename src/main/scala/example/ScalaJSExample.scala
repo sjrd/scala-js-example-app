@@ -4,15 +4,15 @@ import scala.scalajs.js
 import js.annotation.JSExport
 import org.scalajs.dom
 
+class Foo(val x: Int) {
+  def setX(value: Int): Unit = ???
+}
+
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
-    val paragraph = dom.document.createElement("p")
-    paragraph.innerHTML = "<strong>It works!</strong>"
-    dom.document.getElementById("playground").appendChild(paragraph)
+    val foo = new Foo(5)
+    println(foo.x)
+    foo.setX(10)
+    println(foo.x)
   }
-
-  /** Computes the square of an integer.
-   *  This demonstrates unit testing.
-   */
-  def square(x: Int): Int = x*x
 }

@@ -1,7 +1,7 @@
 # Barebone application written in Scala.js
 
 This is a barebone example of an application written in
-[Scala.js](https://www.scala-js.org/).
+[Scala.js](http://www.scala-js.org/).
 
 ## Get started
 

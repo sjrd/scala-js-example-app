@@ -11,9 +11,20 @@ persistLauncher in Compile := true
 
 persistLauncher in Test := false
 
-testFrameworks += new TestFramework("utest.runner.Framework")
+scalaJSUseRhino := false
 
-libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.9.0",
-    "com.lihaoyi" %%% "utest" % "0.3.0" % "test"
-)
+scalaJSOptimizerOptions in Compile ~= {
+  _.withDisableOptimizer(true)
+}
+
+scalaJSOptimizerOptions in (Compile, fullOptJS) ~= {
+  _.withDisableOptimizer(false).withUseClosureCompiler(false)
+}
+
+scalaJSSemantics ~= {
+  _.withAsInstanceOfs(org.scalajs.core.tools.sem.CheckedBehavior.Unchecked)
+}
+
+addCommandAlias("bench",
+    ";set scalaJSStage in Global := FastOptStage;run" +
+    ";set scalaJSStage in Global := FullOptStage;run")

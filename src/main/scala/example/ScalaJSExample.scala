@@ -1,5 +1,7 @@
 package example
 
+import scala.util.Random
+
 import scala.scalajs.js
 import js.annotation.JSExport
 import js.Dynamic.{global => g}
@@ -7,7 +9,7 @@ import js.JSConverters._
 
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
-    testArrayMap()
+    testMultiInline()
   }
 
   def testForWhile(): Unit = {
@@ -108,6 +110,45 @@ object ScalaJSExample extends js.JSApp {
       assert(output.length == input.length)
       for (i <- 0 until output.length)
         assert(output(i) == ((input(i) * 2 / 3) + 4) * 5)
+    }
+  }
+
+  object MultiInline {
+    trait Foo {
+      def bar(x: Int): Int = x * 2 + 3
+    }
+    class A extends Foo
+    class B extends Foo
+    class C extends Foo
+    class D extends Foo
+    class E extends Foo
+    class F extends Foo
+    class G extends Foo
+  }
+
+  def testMultiInline(): Unit = {
+    import MultiInline._
+
+    // Make sure all the classes exist
+    val all = js.Array(new A, new B, new C, new D, new E, new F, new G)
+
+    benchmarks[js.Array[(Foo, Int)], Int] {
+      (1 to 1000000).toJSArray.map(x => (all(Random.nextInt(all.length)), x))
+    } (
+        "multi-inline" ->
+        { in =>
+          var r = 0
+          var i = 0
+          val n = in.length
+          while (i < n) {
+            val x = in(i)
+            r ^= x._1.bar(x._2)
+            i += 1
+          }
+          r
+        }
+    ) { (in, r) =>
+      assert(r == in.foldLeft(0)((prev, x) => prev ^ x._1.bar(x._2)))
     }
   }
 

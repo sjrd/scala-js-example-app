@@ -130,7 +130,7 @@ object ScalaJSExample extends js.JSApp {
     println("-" * title.length)
     println("")
 
-    var total = 0.0
+    val samples = new js.Array[Double]
 
     def fmtTime(time: Double): String = {
       import js.JSNumberOps._
@@ -151,14 +151,14 @@ object ScalaJSExample extends js.JSApp {
         println(s"WarmUp\t${fmtTime(elapsed)}")
       } else {
         println(s"$run.\t${fmtTime(elapsed)}")
-        total += elapsed
+        samples += elapsed
       }
 
       run += 1
     }
 
-    val average = total / Runs
-    println(s"Avg.\t${fmtTime(average)}")
+    val (mean, sem) = meanAndSEM(samples)
+    println(s"Avg.\t${fmtTime(mean)} ± ${fmtTime(sem)}")
   }
 
   val performanceTime: js.Function0[Double] = {
@@ -171,6 +171,18 @@ object ScalaJSExample extends js.JSApp {
         (pair._1 * 1000.0) + (pair._2 / 1000000.0)
       }
     }
+  }
+
+  def meanAndSEM(samples: js.Array[Double]): (Double, Double) = {
+    val n = samples.length
+    val mean = samples.sum / n
+    val sem = standardErrorOfTheMean(samples, mean)
+    (mean, sem)
+  }
+
+  def standardErrorOfTheMean(samples: js.Array[Double], mean: Double): Double = {
+    val n = samples.length
+    Math.sqrt(samples.map(xi => Math.pow(xi - mean, 2)).sum / (n * (n - 1)))
   }
 
   /** A non-inlined `println` not to pollute the outputs. */

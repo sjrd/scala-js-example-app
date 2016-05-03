@@ -38,6 +38,34 @@ object ScalaJSExample extends js.JSApp {
     }
   }
 
+  def testForWhileLong(): Unit = {
+    benchmarks[Long, Long] {
+      123456
+    } (
+        "for loop" ->
+        { n =>
+          var r = 0L
+          for (i <- 0 until n.toInt)
+            r += i.toLong * 2
+          r
+        },
+
+        "while loop" ->
+        { n =>
+          var r = 0L
+          var i = 0
+          val end = n.toInt
+          while (i < end) {
+            r += i.toLong * 2
+            i += 1
+          }
+          r
+        }
+    ) { (n, r) =>
+      assert(r == (n * (n-1)))
+    }
+  }
+
   def testArrayMap(): Unit = {
     benchmarks[js.Array[Int], js.Array[Int]] {
       (1 to 100000).toJSArray

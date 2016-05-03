@@ -9,7 +9,7 @@ import js.JSConverters._
 
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
-    testClosureElim()
+    testTupleStackAlloc()
   }
 
   def testForWhile(): Unit = {
@@ -203,6 +203,39 @@ object ScalaJSExample extends js.JSApp {
         }
     ) { (n, r) =>
       assert(r.sameElements(((0 until n) ++ (n until 0 by -1)).toJSArray))
+    }
+  }
+
+  def testTupleStackAlloc(): Unit = {
+    benchmarks[js.Array[Int], Int] {
+      (1 to 10000).toJSArray.map(_ => Random.nextInt())
+    } (
+        "Tupled" ->
+        { in =>
+          var r = 0
+          var i = 0
+          while (i < in.length) {
+            val x = in(i)
+            val t = (x * 3, x + 4)
+            r += t._1 - t._2
+            i += 1
+          }
+          r
+        },
+
+        "Manual" ->
+        { in =>
+          var r = 0
+          var i = 0
+          while (i < in.length) {
+            val x = in(i)
+            r += (x * 3) - (x + 4)
+            i += 1
+          }
+          r
+        }
+    ) { (in, r) =>
+      assert(r == in.foldLeft(0)((prev, x) => prev + (x * 3) - (x + 4)))
     }
   }
 

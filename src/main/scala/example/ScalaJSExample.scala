@@ -162,16 +162,41 @@ object ScalaJSExample extends js.JSApp {
       }
     }
 
+    def loopAbort(first: Int, until: Int,
+        f: js.Function1[Int, Any]): Unit = {
+      var i = first
+      while (i < until / 2) {
+        f(i)
+        i += 1
+      }
+      while (i < until) {
+        f(i)
+        i += 1
+      }
+    }
+
     benchmarks[Int, js.Array[Int]] {
       1000000
     } (
-        "JS closure elim" ->
+        "Closure elim" ->
         { n =>
           val result = js.Array[Int]()
           loop(0, n, { (i: Int) =>
             result.push(i)
           })
           loop(0, n, { (i: Int) =>
+            result.push(n - i)
+          })
+          result
+        },
+
+        "Closure elim aborted" ->
+        { n =>
+          val result = js.Array[Int]()
+          loopAbort(0, n, { (i: Int) =>
+            result.push(i)
+          })
+          loopAbort(0, n, { (i: Int) =>
             result.push(n - i)
           })
           result

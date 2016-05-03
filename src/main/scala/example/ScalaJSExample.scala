@@ -9,7 +9,7 @@ import js.JSConverters._
 
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
-    testMultiInline()
+    testClosureElim()
   }
 
   def testForWhile(): Unit = {
@@ -149,6 +149,35 @@ object ScalaJSExample extends js.JSApp {
         }
     ) { (in, r) =>
       assert(r == in.foldLeft(0)((prev, x) => prev ^ x._1.bar(x._2)))
+    }
+  }
+
+  def testClosureElim(): Unit = {
+    def loop(first: Int, until: Int,
+        f: js.Function1[Int, Any]): Unit = {
+      var i = first
+      while (i < until) {
+        f(i)
+        i += 1
+      }
+    }
+
+    benchmarks[Int, js.Array[Int]] {
+      1000000
+    } (
+        "JS closure elim" ->
+        { n =>
+          val result = js.Array[Int]()
+          loop(0, n, { (i: Int) =>
+            result.push(i)
+          })
+          loop(0, n, { (i: Int) =>
+            result.push(n - i)
+          })
+          result
+        }
+    ) { (n, r) =>
+      assert(r.sameElements(((0 until n) ++ (n until 0 by -1)).toJSArray))
     }
   }
 

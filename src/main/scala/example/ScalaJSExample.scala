@@ -132,6 +132,11 @@ object ScalaJSExample extends js.JSApp {
 
     var total = 0.0
 
+    def fmtTime(time: Double): String = {
+      import js.JSNumberOps._
+      time.toFixed(2)
+    }
+
     var run = 0
     while (run <= Runs) {
       val initValue = init
@@ -143,9 +148,9 @@ object ScalaJSExample extends js.JSApp {
       val elapsed = end - start
 
       if (run == 0) {
-        println(s"Warm.\t$elapsed")
+        println(s"WarmUp\t${fmtTime(elapsed)}")
       } else {
-        println(s"$run.\t$elapsed")
+        println(s"$run.\t${fmtTime(elapsed)}")
         total += elapsed
       }
 
@@ -153,7 +158,7 @@ object ScalaJSExample extends js.JSApp {
     }
 
     val average = total / Runs
-    println(s"Avg.\t$average")
+    println(s"Avg.\t${fmtTime(average)}")
   }
 
   val performanceTime: js.Function0[Double] = {
@@ -163,7 +168,7 @@ object ScalaJSExample extends js.JSApp {
     } else {
       { () =>
         val pair = g.process.hrtime().asInstanceOf[js.Tuple2[Double, Double]]
-        js.Math.round((pair._1 * 1000.0) + (pair._2 / 1000000.0))
+        (pair._1 * 1000.0) + (pair._2 / 1000000.0)
       }
     }
   }

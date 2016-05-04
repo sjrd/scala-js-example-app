@@ -206,6 +206,10 @@ object ScalaJSExample extends js.JSApp {
     }
   }
 
+  case class MyTuple2[+A, +B](_1: A, _2: B)
+  //case class MyTuple2[@specialized(Int) +A, @specialized(Int) +B](_1: A, _2: B)
+  //@inline case class MyTuple2[+A, +B](_1: A, _2: B)
+
   def testTupleStackAlloc(): Unit = {
     benchmarks[js.Array[Int], Int] {
       (1 to 10000).toJSArray.map(_ => Random.nextInt())

@@ -1,5 +1,7 @@
 package example
 
+import scala.annotation.switch
+
 import scala.util.Random
 
 import scala.scalajs.js
@@ -9,7 +11,7 @@ import js.JSConverters._
 
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
-    testTupleStackAlloc()
+    testPatternMatch()
   }
 
   def testForWhile(): Unit = {
@@ -240,6 +242,77 @@ object ScalaJSExample extends js.JSApp {
         }
     ) { (in, r) =>
       assert(r == in.foldLeft(0)((prev, x) => prev + (x * 3) - (x + 4)))
+    }
+  }
+
+  object PatMat {
+    sealed abstract class Parent(val tpe: Int) {
+      def method(): Int
+    }
+
+    case class A(x: Int) extends Parent(1) { def method(): Int = x * 4 }
+    case class B(x: Int) extends Parent(2) { def method(): Int = x / 3 }
+    case class C(x: Int) extends Parent(3) { def method(): Int = x + 43 }
+    case class D(x: Int) extends Parent(4) { def method(): Int = x - 21 }
+    case class E(x: Int) extends Parent(5) { def method(): Int = x % 65 }
+  }
+
+  def testPatternMatch(): Unit = {
+    import PatMat._
+
+    val all = js.Array[Int => Parent](A(_), B(_), C(_), D(_), E(_))
+
+    benchmarks[js.Array[Parent], Int] {
+      (1 to 100000).toJSArray.map(
+          _ => all(Random.nextInt(all.length))(Random.nextInt()))
+    } (
+        "Pattern match" ->
+        { in =>
+          var r = 0
+          var i = 0
+          while (i < in.length) {
+            r += (in(i) match {
+              case A(x) => x * 4
+              case B(x) => x / 3
+              case C(x) => x + 43
+              case D(x) => x - 21
+              case E(x) => x % 65
+            })
+            i += 1
+          }
+          r
+        },
+
+        "Object-oriented method" ->
+        { in =>
+          var r = 0
+          var i = 0
+          while (i < in.length) {
+            r += in(i).method()
+            i += 1
+          }
+          r
+        },
+
+        "Manual switch" ->
+        { in =>
+          var r = 0
+          var i = 0
+          while (i < in.length) {
+            val obj = in(i)
+            r += ((obj.tpe: @switch) match {
+              case 1 => obj.asInstanceOf[A].x * 4
+              case 2 => obj.asInstanceOf[B].x / 3
+              case 3 => obj.asInstanceOf[C].x + 43
+              case 4 => obj.asInstanceOf[D].x - 21
+              case 5 => obj.asInstanceOf[E].x % 65
+            })
+            i += 1
+          }
+          r
+        }
+    ) { (in, r) =>
+      assert(r == in.foldLeft(0)((prev, x) => prev + x.method()))
     }
   }
 

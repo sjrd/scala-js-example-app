@@ -9,6 +9,13 @@ import js.annotation.JSExport
 import js.Dynamic.{global => g}
 import js.JSConverters._
 
+/* - Ask people for their intuition
+ * - Titles (doc-strings?)
+ * - Bigger spaces between examples
+ * - Normal slides with quizz?
+ * - Ask What's the problem?
+ */
+
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
     testStaticMonomorphic()
@@ -376,6 +383,8 @@ object ScalaJSExample extends js.JSApp {
       check: (A, B) => Unit): Unit = {
     for ((title, body) <- implementations)
       benchmark(title)(init)(body)(check)
+
+    // TODO Show "bars" for the benchmark results in ASCII art
   }
 
   /** Really simple benchmarking framework (one implementation). */

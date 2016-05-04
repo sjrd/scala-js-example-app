@@ -11,7 +11,7 @@ import js.JSConverters._
 
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
-    testPatternMatch()
+    testStaticMonomorphic()
   }
 
   def testForWhile(): Unit = {
@@ -313,6 +313,58 @@ object ScalaJSExample extends js.JSApp {
         }
     ) { (in, r) =>
       assert(r == in.foldLeft(0)((prev, x) => prev + x.method()))
+    }
+  }
+
+  object StaticMonomorphic {
+    trait Statics {
+      def a: Int
+      def staticA(x: Int): Int = (x * 3 + 4) * a
+      def staticB(x: Int, y: Int): Int = x * y / 32
+    }
+
+    class C(val a: Int) extends Statics {
+      def instanceA(x: Int): Int = (x * 3 + 4) * a
+      def instanceB(x: Int, y: Int): Int = x * y / 32
+    }
+  }
+
+  def testStaticMonomorphic(): Unit = {
+    import StaticMonomorphic._
+
+    benchmarks[js.Array[C], Int] {
+      (1 to 100000).toJSArray.map(x => new C(x))
+    } (
+        "Monomorphic" ->
+        { in =>
+          var r = 0
+          var i = 0
+          while (i < in.length) {
+            val x = in(i)
+            r += x.instanceA(r)
+            r += x.instanceB(43, r)
+            i += 1
+          }
+          r
+        },
+
+        "Static" ->
+        { in =>
+          var r = 0
+          var i = 0
+          while (i < in.length) {
+            val x = in(i)
+            r += x.staticA(r)
+            r += x.staticB(43, r)
+            i += 1
+          }
+          r
+        }
+    ) { (in, r) =>
+      assert(r == in.foldLeft(0) { (prev, x) =>
+        val r1 = prev + x.instanceA(prev)
+        r1 + x.instanceB(43, r1)
+      })
     }
   }
 

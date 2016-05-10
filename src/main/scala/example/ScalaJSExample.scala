@@ -18,6 +18,13 @@ import js.JSConverters._
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
     testForWhile()
+    //testForWhileLong()
+    //testArrayMap()
+    //testMultiInline()
+    //testClosureElim()
+    //testTupleStackAlloc()
+    //testPatternMatch()
+    //testStaticMonomorphic()
   }
 
   /* ------------------------------------------------------------------

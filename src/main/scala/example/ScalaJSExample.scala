@@ -18,7 +18,7 @@ import js.JSConverters._
 
 object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
-    testStaticMonomorphic()
+    testForWhile()
   }
 
   def testForWhile(): Unit = {

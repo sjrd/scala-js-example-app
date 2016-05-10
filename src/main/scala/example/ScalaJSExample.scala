@@ -9,9 +9,8 @@ import js.annotation.JSExport
 import js.Dynamic.{global => g}
 import js.JSConverters._
 
-/* - Ask people for their intuition
- * - Titles (doc-strings?)
- * - Bigger spaces between examples
+/* Feedback:
+ * - Ask people for their intuition
  * - Normal slides with quizz?
  * - Ask What's the problem?
  */
@@ -21,6 +20,24 @@ object ScalaJSExample extends js.JSApp {
     testForWhile()
   }
 
+  /* ------------------------------------------------------------------
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *  For loop over a Range
+   *    vs
+   *  While loop
+   */
   def testForWhile(): Unit = {
     benchmarks[Int, Int] {
       123456
@@ -49,6 +66,26 @@ object ScalaJSExample extends js.JSApp {
     }
   }
 
+  /* ------------------------------------------------------------------
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *  For loop over a Range
+   *    vs
+   *  While loop
+   *
+   *  With Long operations!
+   */
   def testForWhileLong(): Unit = {
     benchmarks[Long, Long] {
       123456
@@ -77,6 +114,26 @@ object ScalaJSExample extends js.JSApp {
     }
   }
 
+  /* ------------------------------------------------------------------
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *  Scala's `.map()` on an array
+   *    vs
+   *  JavaScript's "native" `.map()`
+   *    vs
+   *  While loop and `.push()`
+   */
   def testArrayMap(): Unit = {
     benchmarks[js.Array[Int], js.Array[Int]] {
       (1 to 100000).toJSArray
@@ -122,6 +179,24 @@ object ScalaJSExample extends js.JSApp {
     }
   }
 
+  /* ------------------------------------------------------------------
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *  Multi-inlining,
+   *  or the problem of
+   *  concrete methods in traits
+   */
   object MultiInline {
     trait Foo {
       def bar(x: Int): Int = x * 2 + 3
@@ -161,6 +236,22 @@ object ScalaJSExample extends js.JSApp {
     }
   }
 
+  /* ------------------------------------------------------------------
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *  Closure elimination
+   */
   def testClosureElim(): Unit = {
     def loop(first: Int, until: Int,
         f: js.Function1[Int, Any]): Unit = {
@@ -215,6 +306,24 @@ object ScalaJSExample extends js.JSApp {
     }
   }
 
+  /* ------------------------------------------------------------------
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *  Scalar replacement
+   *  aka stack allocation.
+   *  When object instances disappear.
+   */
   case class MyTuple2[+A, +B](_1: A, _2: B)
   //case class MyTuple2[@specialized(Int) +A, @specialized(Int) +B](_1: A, _2: B)
   //@inline case class MyTuple2[+A, +B](_1: A, _2: B)
@@ -252,6 +361,26 @@ object ScalaJSExample extends js.JSApp {
     }
   }
 
+  /* ------------------------------------------------------------------
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *  Pattern matching
+   *    vs
+   *  Object-oriented polymorphic method
+   *    vs
+   *  Switch on a tag
+   */
   object PatMat {
     sealed abstract class Parent(val tpe: Int) {
       def method(): Int
@@ -323,6 +452,24 @@ object ScalaJSExample extends js.JSApp {
     }
   }
 
+  /* ------------------------------------------------------------------
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *  Monomorphic instance method
+   *    vs
+   *  Static method
+   */
   object StaticMonomorphic {
     trait Statics {
       def a: Int
@@ -374,6 +521,23 @@ object ScalaJSExample extends js.JSApp {
       })
     }
   }
+
+  /* ------------------------------------------------------------------
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *  The benchmarking infrastructure
+   */
 
   final val Runs = 10
 

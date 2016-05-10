@@ -138,7 +138,7 @@ object ScalaJSExample extends js.JSApp {
     benchmarks[js.Array[Int], js.Array[Int]] {
       (1 to 100000).toJSArray
     } (
-        "JavaScript Array.prototype.map" ->
+        "JS \"native\" map" ->
         { in =>
           in.asInstanceOf[js.Dynamic]
             .map((x: Int) => x * 2 / 3)
@@ -561,7 +561,7 @@ object ScalaJSExample extends js.JSApp {
     val maxMean = results.map(_._1).max
     for ((title, (mean, sem)) <- implementations.map(_._1).zip(results)) {
       val meanLength = (MaxMeanLength * mean / maxMean).toInt
-      println(f"$title%-24s $mean%3.2f +- $sem%3.2f ${"*" * meanLength}%s")
+      println(f"$title%-24s $mean%5.2f +- $sem%3.2f ${"*" * meanLength}%s")
     }
   }
 

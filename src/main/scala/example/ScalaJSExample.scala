@@ -381,16 +381,27 @@ object ScalaJSExample extends js.JSApp {
   @noinline
   def benchmarks[A, B](init: => A)(implementations: (String, A => B)*)(
       check: (A, B) => Unit): Unit = {
-    for ((title, body) <- implementations)
-      benchmark(title)(init)(body)(check)
+    val results = for ((title, body) <- implementations)
+      yield benchmark(title)(init)(body)(check)
 
-    // TODO Show "bars" for the benchmark results in ASCII art
+    // Show "bars" for the benchmark results in ASCII art
+    println("")
+    println("Summary")
+    println("-------")
+    println("")
+
+    val MaxMeanLength = 40
+    val maxMean = results.map(_._1).max
+    for ((title, (mean, sem)) <- implementations.map(_._1).zip(results)) {
+      val meanLength = (MaxMeanLength * mean / maxMean).toInt
+      println(f"$title%-24s $mean%3.2f +- $sem%3.2f ${"*" * meanLength}%s")
+    }
   }
 
   /** Really simple benchmarking framework (one implementation). */
   @noinline
   def benchmark[A, B](title: String)(init: => A)(body: A => B)(
-      check: (A, B) => Unit): Unit = {
+      check: (A, B) => Unit): (Double, Double) = {
     println("")
     println(title)
     println("-" * title.length)
@@ -424,7 +435,8 @@ object ScalaJSExample extends js.JSApp {
     }
 
     val (mean, sem) = meanAndSEM(samples)
-    println(s"Avg.\t${fmtTime(mean)} ± ${fmtTime(sem)}")
+    println(s"Avg.\t${fmtTime(mean)} +- ${fmtTime(sem)}") // ±
+    (mean, sem)
   }
 
   val performanceTime: js.Function0[Double] = {

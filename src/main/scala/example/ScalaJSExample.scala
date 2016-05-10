@@ -550,8 +550,11 @@ object ScalaJSExample extends js.JSApp {
 
     // Show "bars" for the benchmark results in ASCII art
     println("")
-    println("Summary")
-    println("-------")
+    val withOpt = scala.scalajs.LinkingInfo.productionMode
+    val title =
+      s"Summary -- ${if (withOpt) "WITH" else "WITHOUT"} optimizer"
+    println(title)
+    println("-" * title.length)
     println("")
 
     val MaxMeanLength = 40

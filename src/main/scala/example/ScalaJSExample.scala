@@ -26,7 +26,12 @@ object ScalaJSExample extends js.JSApp {
   def main(): Unit = {
     val paragraph = dom.document.createElement("p")
     paragraph.innerHTML = "<strong>It works!</strong>"
-    dom.document.getElementById("playground").appendChild(paragraph)
+    val playgroundTag = dom.document.getElementById("playground")
+    if (playgroundTag != null) {
+      playgroundTag.appendChild(paragraph)
+    } else {
+      dom.document.body.appendChild(paragraph)
+    }
 
     val p = paragraph.asInstanceOf[ElementExt]
   }

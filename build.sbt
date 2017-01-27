@@ -5,7 +5,7 @@ name := "Example"
 
 version := "0.1-SNAPSHOT"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.1"
 
 persistLauncher in Compile := true
 
@@ -14,6 +14,6 @@ persistLauncher in Test := false
 testFrameworks += new TestFramework("utest.runner.Framework")
 
 libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.9.0",
-    "com.lihaoyi" %%% "utest" % "0.3.0" % "test"
+    "org.scala-js" %%% "scalajs-dom" % "0.9.1",
+    "com.lihaoyi" %%% "utest" % "0.4.5" % "test"
 )

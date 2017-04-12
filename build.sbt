@@ -7,9 +7,7 @@ version := "0.1-SNAPSHOT"
 
 scalaVersion := "2.12.1"
 
-scalaJSUseMainModuleInitializer in Compile:= true
-
-scalaJSUseMainModuleInitializer in Test := false
+scalaJSUseMainModuleInitializer := true
 
 testFrameworks += new TestFramework("utest.runner.Framework")
 

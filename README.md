@@ -1,5 +1,7 @@
 # Barebone application written in Scala.js
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4dd76174da204498941e0c0863467bbe)](https://www.codacy.com/app/sjrdoeraene/scala-js-example-app?utm_source=github.com&utm_medium=referral&utm_content=sjrd/scala-js-example-app&utm_campaign=badger)
+
 This is a barebone example of an application written in
 [Scala.js](http://www.scala-js.org/).
 

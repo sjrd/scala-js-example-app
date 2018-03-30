@@ -1,4 +1,7 @@
-# Barebone application written in Scala.js
+# Barebone application written in Scala.js -- not maintained
+
+**This repository is not maintained anymore.
+Consider the [scala-js-tutorial](https://github.com/scala-js/scalajs-tutorial) repository instead, along with [the actual tutorial](https://www.scala-js.org/tutorial/basic/).**
 
 This is a barebone example of an application written in
 [Scala.js](http://www.scala-js.org/).
